@@ -10,4 +10,5 @@ class EventType(Enum):
     USER_DEACTIVATION = 4
     USER_CONTROL = 5
     USER_END_CONTROL = 6
-    LOG = 7
+    RESET = 7
+    LOG = 8

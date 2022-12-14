@@ -23,18 +23,17 @@ class EventPersistence:
             print("Something went wrong: {}".format(err))
 
     @staticmethod
-    def getEventByLabelEvent(labelEvent):
-        try:
+    def getEventByRange(datetime_start) :
+        try :
             db = DBFactory.get_instance_mysql_db()
             cursor = db.cursor()
 
-            sql = "SELECT * FROM event AS e WHERE e.label_event = %s"
-            cursor.execute(sql, (labelEvent,))
+            sql = "SELECT * FROM event AS e WHERE e.timestamp_event_receive > %s"
+            cursor.execute(sql, (datetime_start,))
             event = cursor.fetchone()
             db.commit()
             cursor.close()
             db.close()
             return event
-
         except mysql.connector.Error as err:
             print("Something went wrong: {}".format(err))

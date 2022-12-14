@@ -5,15 +5,14 @@ from datetime import datetime
 import time
 import ray
 
-#print(EventPersistence.getEventByLabelEvent('BUTTON_PRESSED'))
-
-
-
 event = Event(2, 1, time.time(), 0.8989)
 
 ep_influx.insertEvent(event)
 
-ep_influx.getEvent()
+results = ep_influx.getEvent()
+
+for r in results:
+    print(r)
 
 ##ray.init()
 
