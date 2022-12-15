@@ -12,3 +12,5 @@ class EventType(Enum):
     USER_END_CONTROL = 6
     RESET = 7
     LOG = 8
+    MOVEMENT_CAMERA = 9
+    CONNNECTION = 10

@@ -11,4 +11,8 @@ class Constant:
     SERVER_ADRESS = ""
     SERVER_HOST = "localhost"
     SERVER_PORT_ALARM = 5005
-    SERVER_PORT_NO_ALARM = 5006
+    PORT_NO_ALARM = 5006
+    #PORT_NO_ALARM = 5005
+    #HOST_NO_ALARM = '192.168.95.22'
+    HOST_NO_ALARM = '192.168.95.33'
+    #HOST_NO_ALARM = 'localhost'

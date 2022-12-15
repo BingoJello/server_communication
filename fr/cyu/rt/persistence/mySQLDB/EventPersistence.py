@@ -10,10 +10,18 @@ class EventPersistence:
         try:
             db = DBFactory.get_instance_mysql_db()
             cursor = db.cursor()
-            sql = "INSERT INTO event(id_event, id_sensor, label_event, label_sensor, timestamp_event_insert, " \
-                  "timestamp_event_receive) VALUES(%s, %s, %s, %s, %s, %s)"
-            val = (event.getEventTypeID(), event.getSensorTypeID(), event.getEventTypeLabel(), event.getSensorTypeLabel(),
-                   datetime.now(), event.getTimestamp())
+            print(event.getImg())
+            if event.getImg() is not None or event.getImg() != "None":
+                sql = "INSERT INTO event(id_event, id_sensor, label_event, label_sensor, timestamp_event_insert, " \
+                      "timestamp_event_receive, measurement, img) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                val = (event.getEventTypeID(), event.getSensorTypeID(), event.getEventTypeLabel(), event.getSensorTypeLabel(),
+                       datetime.now().isoformat(), event.getDateTime().isoformat(), event.getMeasure(), event.getImg())
+            else:
+                sql = "INSERT INTO event(id_event, id_sensor, label_event, label_sensor, timestamp_event_insert, " \
+                      "timestamp_event_receive, measurement) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+                val = (event.getEventTypeID(), event.getSensorTypeID(), event.getEventTypeLabel(), event.getSensorTypeLabel(),
+                       datetime.now().isoformat(), event.getDateTime().isoformat(), event.getMeasure())
+
             cursor.execute(sql, val)
             db.commit()
             cursor.close()
@@ -23,7 +31,7 @@ class EventPersistence:
             print("Something went wrong: {}".format(err))
 
     @staticmethod
-    def getEventByRange(datetime_start) :
+    def getEventByRangeDate(datetime_start) :
         try :
             db = DBFactory.get_instance_mysql_db()
             cursor = db.cursor()

@@ -6,33 +6,33 @@ from fr.cyu.rt.business.model.EventType import EventType
 
 class Event:
     def __init__(self):
-        self.eventTypeID = 0
-        self.eventTypeLabel = EventType(0).name
-        self.sensorTypeID = 0
-        self.sensorTypeLabel = SensorType(0).name
+        self.eventTypeID = -1
+        self.eventTypeLabel = EventType(-1).name
+        self.sensorTypeID = -1
+        self.sensorTypeLabel = SensorType(-1).name
         self.timestamp = time.time()
         self.dateTime = datetime.now()
-        self.measurement = 'None'
-        self.img = 'None'
+        self.measurement = None
+        self.img = None
 
-    def __init__(self, eventTypeID=-1, sensorTypeID=-1, timestamp=time.time(), measure='None', img='None'):
-        if eventTypeID in EventType._value2member_map_.keys():
-            self.eventTypeID = eventTypeID
-            self.eventTypeLabel = EventType(eventTypeID).name
+    def __init__(self, eventTypeID=-1, sensorTypeID=-1, timestamp=time.time(), measure=None, img=None):
+        if int(eventTypeID) in EventType._value2member_map_.keys():
+            self.eventTypeID = int(eventTypeID)
+            self.eventTypeLabel = EventType(int(eventTypeID)).name
         else:
-            self.eventTypeID = 0
-            self.eventTypeLabel = EventType(0).name
+            self.eventTypeID = -1
+            self.eventTypeLabel = EventType(-1).name
 
-        if sensorTypeID in SensorType._value2member_map_.keys() :
-            self.sensorTypeID = sensorTypeID
-            self.sensorTypeLabel = SensorType(sensorTypeID).name
+        if int(sensorTypeID) in SensorType._value2member_map_.keys() :
+            self.sensorTypeID = int(sensorTypeID)
+            self.sensorTypeLabel = SensorType(int(sensorTypeID)).name
         else :
-            self.sensorTypeID = 0
-            self.sensorTypeLabel = SensorType(0).name
+            self.sensorTypeID = -1
+            self.sensorTypeLabel = SensorType(-1).name
 
-        self.timestamp = timestamp
-        self.dateTime = datetime.fromtimestamp(timestamp)
-        self.measure = measure
+        self.timestamp = float(timestamp)
+        self.dateTime = datetime.fromtimestamp(float(timestamp))
+        self.measure = float(measure)
         self.img = img
 
     def getEventTypeID(self):
@@ -98,4 +98,4 @@ class Event:
 
     def __str__(self) :
         return f'{self.eventTypeID} {self.eventTypeLabel} {self.sensorTypeID} {self.sensorTypeLabel} ' \
-               f'{self.timestamp} {self.dateTime} {self.measure} {self.img}'
+               f'{self.dateTime} {self.measure} {self.img}'

@@ -1,5 +1,4 @@
-from communication.Server import Server
-from communication.Client import Client
+from fr.cyu.rt.communication import Server
 from utils.Constant import Constant as ct
 
 

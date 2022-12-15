@@ -12,14 +12,26 @@ class EventPersistence:
     @staticmethod
     def insertEvent(event:Event):
         client = DBFactory.get_instance_influx_db()
+        if event.getEventTypeID() == 9:
+            x = event.getMeasure().split(';')[0]
+            y = event.getMeasure().split(';')[1]
 
-        write_api = client.write_api(write_options=SYNCHRONOUS)
-        point = Point("log") \
-            .tag("id_sensor", event.getSensorTypeID()) \
-            .tag("label_sensor", event.getSensorTypeLabel()) \
-            .field("measure", event.getMeasure()) \
-            .time(datetime.utcfromtimestamp(event.getTimestamp()), WritePrecision.NS)
-            #.time(datetime.utcnow(), WritePrecision.NS)
+            write_api = client.write_api(write_options=SYNCHRONOUS)
+            point = Point("log") \
+                .tag("id_sensor", event.getSensorTypeID()) \
+                .tag("label_sensor", event.getSensorTypeLabel()) \
+                .field("x", x) \
+                .field("y", y) \
+                .time(datetime.utcfromtimestamp(float(event.getTimestamp())), WritePrecision.NS)
+                #.time(datetime.utcnow(), WritePrecision.NS)
+        else:
+            write_api = client.write_api(write_options=SYNCHRONOUS)
+            point = Point("log") \
+                .tag("id_sensor", event.getSensorTypeID()) \
+                .tag("label_sensor", event.getSensorTypeLabel()) \
+                .field("measure", event.getMeasure()) \
+                .time(datetime.utcfromtimestamp(float(event.getTimestamp())), WritePrecision.NS)
+            # .time(datetime.utcnow(), WritePrecision.NS)
 
         write_api.write(ct.INFLUX_DB_BUCKET, ct.INFLUX_DB_ORG, point)
 
