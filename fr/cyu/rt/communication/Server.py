@@ -8,7 +8,7 @@ from fr.cyu.rt.communication.ClientWebSocket import ClientWebSocket
 from fr.cyu.rt.business.model.Event import Event
 from fr.cyu.rt.persistence.influxDB.EventPersistence import EventPersistence as influx_persist
 from fr.cyu.rt.persistence.mySQLDB.EventPersistence import EventPersistence as mysql_persist
-
+from datetime import datetime
 
 class Server(threading.Thread):
     def __init__(self, address, port):
@@ -37,36 +37,45 @@ class Server(threading.Thread):
             client, addressClient = self.serveur.accept()
             print('Connexion de ', addressClient)
 
-            data = client.recv(1024)
+            data = client.recv(10000)
 
             if not data:
                 print('Erreur de reception du rasberry')
                 continue
             else:
-                #print('Reception de:', data, ' sur le port', self.port)
-                list_elt = data.decode().split(' ')
-                print(list_elt)
+                print('Reception de:', data, ' sur le port', self.port)
+                list_elt = data.decode("utf-8").split(' ')
+
                 if len(list_elt) == 5:
-                    event_string = f'sensorId:{str(event.event.getSensorTypeID())};;' \
-                                   f'sensorType:{event.getEventTypeLabel()};;' \
-                                   f'value:{str(event.getMeasure())};;' \
-                                   f'timestamp:{event.getDateTime().isoformat()}'
-                    self.c.send("/app/house/sensor", body=json.dumps({"content" : event_string}))
+                    if list_elt[0] == 'i' :
+                        list_elt[0] = 4
+                    else:
+                        list_elt[0] = 8
 
-                    if list_elt[0] == 'i':
-                        list_elt[0] = 0
-                        event = Event(list_elt[0], list_elt[1], list_elt[2], list_elt[3], list_elt[4])
+                    event = Event(list_elt[0], list_elt[1], list_elt[3], list_elt[2], list_elt[4])
+                    print('Sensor')
+                    event_dict = {'sensorId' : str(event.getSensorTypeID()),
+                                  'sensorType' : event.getSensorTypeLabel(),
+                                  'value' : str(event.getMeasure()),
+                                  'timestamp' :datetime.now().isoformat()}
+
+                    self.c.send("/app/house/sensor", body=json.dumps(event_dict))
+
+                    if list_elt[0] == 4:
+                        list_elt[0] = 4
+                        event = Event(list_elt[0], list_elt[1], list_elt[3], list_elt[2], list_elt[4])
+
+                        event_dict = {'alertType':'ALERT',
+                                      'sensorId' : str(event.getSensorTypeID()),
+                                      'sensorType' : event.getSensorTypeLabel(),
+                                      'value': str(event.getMeasure()),
+                                      'timestamp' :datetime.now().isoformat()}
+                        print("Alerte")
+                        self.c.send("/app/house/alert", body=json.dumps(event_dict))
                         mysql_persist.insertEvent(event)
-
-                        event_string = f'alertType:"ALERT";;' \
-                                       f'sensorType:{event.eventTypeLabel};;' \
-                                       f'sensorId:{str(event.getEventTypeID())};;' \
-                                       f'value:{str(event.getMeasure())};;' \
-                                       f'timestamp:{event.getDateTime().isoformat()}'
-                        self.c.send("/app/house/alert", body=json.dumps({"content" : event_string}))
                     else:
                         list_elt[1] = 8
-                        event = Event(list_elt[0], list_elt[1], list_elt[2], list_elt[3], list_elt[4])
+                        event = Event(list_elt[0], list_elt[1], list_elt[3], list_elt[2], list_elt[4])
                         influx_persist.insertEvent(event)
 
 

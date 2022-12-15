@@ -32,7 +32,8 @@ class Event:
 
         self.timestamp = float(timestamp)
         self.dateTime = datetime.fromtimestamp(float(timestamp))
-        self.measure = float(measure)
+        if measure is not None:
+            self.measure = float(measure)
         self.img = img
 
     def getEventTypeID(self):
