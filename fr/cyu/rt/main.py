@@ -11,16 +11,11 @@ from fr.cyu.rt.persistence.influxDB.EventPersistence import EventPersistence as 
 import time
 from fr.cyu.rt.utils.Constant import Constant as ct
 
-
-
 thread_server = Server(ct.SERVER_ADRESS, ct.SERVER_PORT_ALARM)
 thread_server.start()
-thread_server.join()
-''''
 thread_client = Client(ct.PORT_NO_ALARM, ct.HOST_NO_ALARM)
 thread_client.start()
+thread_server.join()
 thread_client.join()
 
-['i', '1', '0', '1671119630.8397105', 'None']
-'''
 

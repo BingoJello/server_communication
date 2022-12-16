@@ -14,3 +14,4 @@ class EventType(Enum):
     LOG = 8
     MOVEMENT_CAMERA = 9
     CONNNECTION = 10
+    PHOTO = 11
